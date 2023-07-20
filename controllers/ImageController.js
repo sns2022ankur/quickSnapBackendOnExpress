@@ -43,8 +43,8 @@ class ImageController{
         try{
             const {user, folder} = req.body
             const files = req.files.image;
-            console.log(user);
-            console.log(files);
+            // console.log(user);
+            // console.log(files);
 
             // Iterate through each uploaded file
             for (let i = 0; i < files.length; i++) {
