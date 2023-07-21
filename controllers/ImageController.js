@@ -13,7 +13,7 @@ class ImageController{
         try{
             // console.log(req.params.id);
             const user = req.params.id
-            const data = await ImageModel.find({ user: user })
+            const data = await ImageModel.find({ user: user }).sort({ _id: -1 })
             // console.log(data);
             res.status(201).json({
                 success: true,
@@ -24,11 +24,11 @@ class ImageController{
         }
     }
 
-    static fetchEditedImages = async(req,res) => {
+    static fetchQuickSnaps = async(req,res) => {
         try{
             // console.log(req.params.id);
             const user = req.params.id
-            const data = await ImageModel.find({ user: user, folder: 'editedImages' })
+            const data = await ImageModel.find({ user: user, folder: 'quickSnaps' }).sort({ _id: -1 })
             // console.log(data);
             res.status(201).json({
                 success: true,
@@ -85,27 +85,6 @@ class ImageController{
                 var dataSaved = await data.save()
             }
 
-            // // Iterate through each uploaded file
-            // for (let i = 0; i < files.length; i++) {
-            //     const file = files[i];
-            
-            //     // Upload the file to Cloudinary
-            //     const myCloud = await cloudinary.uploader.upload(file.tempFilePath,{
-            //         folder: 'quickSnapImages'
-            //     });
-
-            //     var data = new ImageModel({
-            //         user: user,
-            //         image: {
-            //             public_id: myCloud.public_id,
-            //             url: myCloud.secure_url,
-            //         },
-            //         folder: folder
-            //     })
-
-            //     var dataSaved = await data.save()
-            // }
-
             if (dataSaved) {
                 res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
             } else {
@@ -120,7 +99,7 @@ class ImageController{
         try{
             // console.log(req.body);
             // console.log(req.files);
-            const {user} = req.body
+            const {user, folder} = req.body
             const files = req.files.image;
 
             // Upload the file to Cloudinary
@@ -133,7 +112,8 @@ class ImageController{
                 image: {
                     public_id: myCloud.public_id,
                     url: myCloud.secure_url,
-                }
+                },
+                folder: folder
             })
 
             await data.save()

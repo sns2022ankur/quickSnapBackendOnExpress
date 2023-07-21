@@ -18,7 +18,7 @@ router.post('/resetPassword',UserController.resetPassword)
 
 //ImageController
 router.get('/fetchImages/:id',ImageController.fetchImages)
-router.get('/fetchEditedImages/:id',ImageController.fetchEditedImages)
+router.get('/fetchQuickSnaps/:id',ImageController.fetchQuickSnaps)
 router.post('/storeImage',ImageController.storeImage)
 router.post('/storeEditedImage',ImageController.storeEditedImage)
 router.get('/deleteImage/:id',ImageController.deleteImage)
