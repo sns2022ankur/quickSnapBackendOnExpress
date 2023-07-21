@@ -46,12 +46,30 @@ class ImageController{
             // console.log(user);
             // console.log(files);
 
-            // Iterate through each uploaded file
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-            
+            if (files.length <= 2) {
+                // Iterate through each uploaded file
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                
+                    // Upload the file to Cloudinary
+                    var myCloud = await cloudinary.uploader.upload(file.tempFilePath,{
+                        folder: 'quickSnapImages'
+                    });
+
+                    var data = new ImageModel({
+                        user: user,
+                        image: {
+                            public_id: myCloud.public_id,
+                            url: myCloud.secure_url,
+                        },
+                        folder: folder
+                    })
+
+                    var dataSaved = await data.save()
+                }
+            } else {
                 // Upload the file to Cloudinary
-                const myCloud = await cloudinary.uploader.upload(file.tempFilePath,{
+                var myCloud = await cloudinary.uploader.upload(files.tempFilePath,{
                     folder: 'quickSnapImages'
                 });
 
@@ -64,9 +82,35 @@ class ImageController{
                     folder: folder
                 })
 
-                await data.save()
+                var dataSaved = await data.save()
             }
-            res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+
+            // // Iterate through each uploaded file
+            // for (let i = 0; i < files.length; i++) {
+            //     const file = files[i];
+            
+            //     // Upload the file to Cloudinary
+            //     const myCloud = await cloudinary.uploader.upload(file.tempFilePath,{
+            //         folder: 'quickSnapImages'
+            //     });
+
+            //     var data = new ImageModel({
+            //         user: user,
+            //         image: {
+            //             public_id: myCloud.public_id,
+            //             url: myCloud.secure_url,
+            //         },
+            //         folder: folder
+            //     })
+
+            //     var dataSaved = await data.save()
+            // }
+
+            if (dataSaved) {
+                res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+            } else {
+                res.status(401).json({ 'status': 'failed', 'message': 'Error!' }) 
+            }
         }catch(err){
             res.status(401).json({ 'status': 'failed', 'message': err }) 
         }
