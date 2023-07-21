@@ -61,7 +61,7 @@ class ImageController{
                         public_id: myCloud.public_id,
                         url: myCloud.secure_url,
                     },
-                    folder: folder == '' ? '' : folder
+                    folder: folder
                 })
 
                 await data.save()
