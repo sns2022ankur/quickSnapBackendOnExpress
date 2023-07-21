@@ -24,6 +24,21 @@ class ImageController{
         }
     }
 
+    static fetchFolderImages = async(req,res) => {
+        try{
+            // console.log(req.params.id);
+            const folder = req.params.id
+            const data = await ImageModel.find({ folder: folder }).sort({ _id: -1 })
+            // console.log(data);
+            res.status(201).json({
+                success: true,
+                data
+            })
+        }catch(err){
+            res.status(401).json({ 'status': 'failed', 'message': err })
+        }
+    }
+
     static fetchQuickSnaps = async(req,res) => {
         try{
             // console.log(req.params.id);
