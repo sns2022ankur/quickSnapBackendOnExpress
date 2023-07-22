@@ -32,36 +32,36 @@ class ImageController{
             const { user, folder, type } = req.body
             
             const folderData = await FolderModel.findOne({ _id: folder })
-            console.log(folderData);
+            // console.log(folderData);
 
-            // if (type == 'move') {
-            //     var data = await ImageModel.findByIdAndUpdate(req.params.id, {
-            //         folder: folder
-            //     })
+            if (type == 'move') {
+                var data = await ImageModel.findByIdAndUpdate(req.params.id, {
+                    folder: folder
+                })
 
-            //     var dataSaved = data.save()
-            // }
-            // if (type == 'copy') {
-            //     var image_ID = req.params.id
-            //     const imageData = await ImageModel.findOne({ _id: image_ID })
+                var dataSaved = data.save()
+            }
+            if (type == 'copy') {
+                var image_ID = req.params.id
+                const imageData = await ImageModel.findOne({ _id: image_ID })
 
-            //     var data = new ImageModel({
-            //         user: user,
-            //         image: {
-            //             public_id: imageData.image.public_id,
-            //             url: imageData.image.url,
-            //         },
-            //         folder: folder,
-            //     })
+                var data = new ImageModel({
+                    user: user,
+                    image: {
+                        public_id: imageData.image.public_id,
+                        url: imageData.image.url,
+                    },
+                    folder: folder,
+                })
 
-            //     var dataSaved = data.save()
-            // }
+                var dataSaved = data.save()
+            }
 
-            // if (dataSaved) {
-            //     res.status(201).json({ 'status': 'success', 'message': `Image ${type == 'move' ? 'moved' : 'copied'} to ${folderData.folderName} Successfully!` })
-            // } else {
-            //     res.status(401).json({ 'status': 'failed', 'message': 'Error!' }) 
-            // }
+            if (dataSaved) {
+                res.status(201).json({ 'status': 'success', 'message': `Image ${type == 'move' ? 'moved' : 'copied'} to ${folderData.folderName} Successfully!` })
+            } else {
+                res.status(401).json({ 'status': 'failed', 'message': 'Error!' }) 
+            }
         }catch(err){
             res.status(401).json({ 'status': 'failed', 'message': err })
         }
