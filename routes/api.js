@@ -18,6 +18,7 @@ router.post('/resetPassword',UserController.resetPassword)
 
 //ImageController
 router.get('/fetchImages/:id',ImageController.fetchImages)
+router.post('/moveOrCopyImageToFolder/:id',ImageController.moveOrCopyImageToFolder)
 router.get('/fetchFolderImages/:id',ImageController.fetchFolderImages)
 router.get('/fetchQuickSnaps/:id',ImageController.fetchQuickSnaps)
 router.post('/storeImage',ImageController.storeImage)
