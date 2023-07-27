@@ -191,6 +191,8 @@ class ImageController{
 
     static deleteImage = async(req,res) => {
         try{
+            const user = await ImageModel.findById(req.params.id)
+            await cloudinary.uploader.destroy(user.image.public_id)
             const data = await ImageModel.findByIdAndDelete(req.params.id)
 
             if (data) {
