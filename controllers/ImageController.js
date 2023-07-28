@@ -26,6 +26,18 @@ class ImageController{
         }
     }
 
+    static fetchSingleImage = async(req,res) => {
+        try{
+            const data = await ImageModel.findById(req.params.id)
+            res.status(201).json({
+                success: true,
+                data
+            })
+        }catch(err){
+            console.log(err);
+        }
+    }
+
     static moveOrCopyImageToFolder = async(req,res) => {
         try{
             // console.log(req.body);
@@ -162,6 +174,34 @@ class ImageController{
     }
 
     static storeEditedImage = async(req,res) => {
+        try{
+            // console.log(req.body);
+            // console.log(req.files);
+            const {user, folder} = req.body
+            const files = req.files.image;
+
+            // Upload the file to Cloudinary
+            const myCloud = await cloudinary.uploader.upload(files.tempFilePath,{
+                folder: 'quickSnapImages'
+            });
+
+            var data = new ImageModel({
+                user: user,
+                image: {
+                    public_id: myCloud.public_id,
+                    url: myCloud.secure_url,
+                },
+                folder: folder
+            })
+
+            await data.save()
+            res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+        }catch(err){
+            res.status(401).json({ 'status': 'failed', 'message': err }) 
+        }
+    }
+
+    static storeFilteredImage = async(req,res) => {
         try{
             // console.log(req.body);
             // console.log(req.files);
