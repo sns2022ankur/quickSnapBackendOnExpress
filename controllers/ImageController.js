@@ -1,5 +1,4 @@
 const FolderModel = require("../models/Folder");
-const { findByIdAndUpdate } = require("../models/Folder");
 const ImageModel = require("../models/Image")
 var cloudinary = require('cloudinary').v2
 cloudinary.config({ 
