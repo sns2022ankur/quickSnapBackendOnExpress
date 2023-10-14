@@ -111,61 +111,24 @@ class ImageController{
     static storeImage = async(req,res) => {
         try{
             const {user, folder} = req.body
-            const files = req.files.image;
-            // console.log(user);
-            // console.log(files);
+            const uploadedFiles = req.files;
 
-            if (files.length >= 2) {
-                // Iterate through each uploaded file
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-
-                    if (file.size > 10485760) {
-                        res.status(401).json({ 'status': 'failed', 'message': 'File Size is larger than 10MB!' })
-                    } else {
-                        // Upload the file to Cloudinary
-                        var myCloud = await cloudinary.uploader.upload(file.tempFilePath,{
-                            folder: 'quickSnapImages'
-                        });
-
-                        var data = new ImageModel({
-                            user: user,
-                            image: {
-                                public_id: myCloud.public_id,
-                                url: myCloud.secure_url,
-                            },
-                            folder: folder
-                        })
-
-                        var dataSaved = await data.save()
-                    }
-                }
-            } else {
-                if (files.size > 10485760) {
-                    res.status(401).json({ 'status': 'failed', 'message': 'File Size is larger than 10MB!' })
-                } else {
-                    // Upload the file to Cloudinary
-                    var myCloud = await cloudinary.uploader.upload(files.tempFilePath,{
-                        folder: 'quickSnapImages'
-                    });
-
-                    var data = new ImageModel({
-                        user: user,
-                        image: {
-                            public_id: myCloud.public_id,
-                            url: myCloud.secure_url,
-                        },
-                        folder: folder
-                    })
-
-                    var dataSaved = await data.save()
-                }
-            }
-
+            const filePromises = uploadedFiles.map(async (file) => {
+                const newFile = new ImageModel({
+                    image: file.path,
+                    user: user,
+                    folder: folder,
+                  // Set other fields if needed
+                });
+                return await newFile.save();
+            });
+          
+            const dataSaved = await Promise.all(filePromises);
+  
             if (dataSaved) {
                 res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
             } else {
-                res.status(401).json({ 'status': 'failed', 'message': 'Error!' }) 
+                res.status(401).json({ 'status': 'failed', 'message': 'Internal Server Error!' }) 
             }
         }catch(err){
             res.status(401).json({ 'status': 'failed', 'message': err }) 
@@ -174,27 +137,21 @@ class ImageController{
 
     static storeEditedImage = async(req,res) => {
         try{
-            // console.log(req.body);
-            // console.log(req.files);
             const {user, folder} = req.body
-            const files = req.files.image;
+            const path = req.file.path
 
-            // Upload the file to Cloudinary
-            const myCloud = await cloudinary.uploader.upload(files.tempFilePath,{
-                folder: 'quickSnapImages'
-            });
-
-            var data = new ImageModel({
+            const data = new ImageModel({
+                image : path,
                 user: user,
-                image: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url,
-                },
-                folder: folder
+                folder: folder,
             })
+            const dataSaved = await data.save()
 
-            await data.save()
-            res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+            if (dataSaved) {
+                res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+            } else {
+                res.status(401).json({ 'status': 'failed', 'message': 'Internal Server Error!' })
+            }
         }catch(err){
             res.status(401).json({ 'status': 'failed', 'message': err }) 
         }
@@ -202,27 +159,21 @@ class ImageController{
 
     static storeFilteredImage = async(req,res) => {
         try{
-            // console.log(req.body);
-            // console.log(req.files);
             const {user, folder} = req.body
-            const files = req.files.image;
+            const path = req.file.path
 
-            // Upload the file to Cloudinary
-            const myCloud = await cloudinary.uploader.upload(files.tempFilePath,{
-                folder: 'quickSnapImages'
-            });
-
-            var data = new ImageModel({
+            const data = new ImageModel({
+                image : path,
                 user: user,
-                image: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url,
-                },
-                folder: folder
+                folder: folder,
             })
+            const dataSaved = await data.save()
 
-            await data.save()
-            res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+            if (dataSaved) {
+                res.status(201).json({ 'status': 'success', 'message': 'Image Saved Successfully!' })
+            } else {
+                res.status(401).json({ 'status': 'failed', 'message': 'Internal Server Error!' })
+            }
         }catch(err){
             res.status(401).json({ 'status': 'failed', 'message': err }) 
         }

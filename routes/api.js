@@ -1,9 +1,24 @@
 const express = require('express')
+const multer  = require('multer')
 const router = express.Router()
 const Auth = require('../middleware/Auth')
 const UserController = require('../controllers/UserController')
 const ImageController = require('../controllers/ImageController')
 const FolderController = require('../controllers/FolderController')
+
+
+//multer middleware
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/');  // Destination folder where files will be stored
+    //   cb(null, 'public/uploads/');  // Destination folder where files will be stored
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + '-' + file.originalname);  // Unique filename
+    }
+});
+
+const upload = multer({ storage: storage });
 
 
 
@@ -22,9 +37,9 @@ router.get('/fetchSingleImage/:id',ImageController.fetchSingleImage)
 router.post('/moveOrCopyImageToFolder/:id',ImageController.moveOrCopyImageToFolder)
 router.get('/fetchFolderImages/:id',ImageController.fetchFolderImages)
 router.get('/fetchQuickSnaps/:id',ImageController.fetchQuickSnaps)
-router.post('/storeImage',ImageController.storeImage)
-router.post('/storeEditedImage',ImageController.storeEditedImage)
-router.post('/storeFilteredImage',ImageController.storeFilteredImage)
+router.post('/storeImage',upload.array('file'),ImageController.storeImage)
+router.post('/storeEditedImage',upload.single("file"),ImageController.storeEditedImage)
+router.post('/storeFilteredImage',upload.single("file"),ImageController.storeFilteredImage)
 router.get('/deleteImage/:id',ImageController.deleteImage)
 
 
